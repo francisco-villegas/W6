@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:background="@color/bootstrap_gray_lighter"
+    android:padding="10dp"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view_outer"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:animateLayoutChanges="true"
+        android:layout_gravity="center"
+        card_view:cardBackgroundColor="@android:color/transparent"
+        card_view:cardCornerRadius="0dp"
+        card_view:cardElevation="0dp" >
+
+        <android.support.v7.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_view_inner"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="3dp"
+            card_view:cardBackgroundColor="@color/white"
+            card_view:cardCornerRadius="100dp"
+            card_view:cardElevation="10dp" >
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <com.beardedhen.androidbootstrap.BootstrapCircleThumbnail
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:bootstrapBrand="danger"
+                    app:hasBorder="true"
+                    card_view:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    card_view:layout_constraintBottom_toBottomOf="parent"
+                    card_view:layout_constraintLeft_toLeftOf="parent"
+                    android:id="@+id/img" />
+
+                <FrameLayout
+                    android:id="@+id/scroll_parent"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="8dp"
+                    card_view:layout_constraintBottom_toBottomOf="parent"
+                    card_view:layout_constraintLeft_toRightOf="@+id/img"
+                    card_view:layout_constraintTop_toTopOf="parent"
+                    card_view:layout_constraintVertical_bias="0.0"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginRight="0dp"
+                    card_view:layout_constraintRight_toRightOf="parent">
+
+                    <ScrollView
+                        android:id="@+id/scroll"
+                        android:fillViewport="true"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <android.support.constraint.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/tvOverview"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="8dp"
+                                android:layout_marginRight="40dp"
+                                android:layout_marginTop="0dp"
+                                android:scrollbars="none"
+                                android:text="3212213"
+                                android:textColor="@color/bootstrap_gray_dark"
+                                android:textSize="15sp"
+                                android:textStyle="bold|italic"
+                                card_view:layout_constraintHorizontal_bias="0.0"
+                                card_view:layout_constraintLeft_toLeftOf="parent"
+                                card_view:layout_constraintRight_toRightOf="parent"
+                                card_view:layout_constraintTop_toBottomOf="@+id/tvRelease" />
+
+                            <TextView
+                                android:id="@+id/tvRelease"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="32dp"
+                                android:layout_marginLeft="8dp"
+                                android:layout_marginRight="32dp"
+                                android:layout_marginStart="8dp"
+                                android:scrollbars = "none"
+                                android:layout_marginTop="8dp"
+                                android:text="3212213"
+                                android:textColor="@color/bootstrap_gray_dark"
+                                android:textSize="15sp"
+                                android:textStyle="bold|italic"
+                                card_view:layout_constraintHorizontal_bias="1.0"
+                                card_view:layout_constraintLeft_toLeftOf="parent"
+                                card_view:layout_constraintRight_toRightOf="parent"
+                                card_view:layout_constraintTop_toBottomOf="@+id/tvRegion" />
+
+                            <TextView
+                                android:id="@+id/tvRegion"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="32dp"
+                                android:layout_marginLeft="8dp"
+                                android:layout_marginRight="32dp"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="17dp"
+                                android:text="3212213"
+                                android:scrollbars = "none"
+                                android:textColor="@color/bootstrap_brand_primary"
+                                android:textSize="13sp"
+                                android:textStyle="bold|italic"
+                                card_view:layout_constraintHorizontal_bias="1.0"
+                                card_view:layout_constraintLeft_toLeftOf="parent"
+                                card_view:layout_constraintRight_toRightOf="parent"
+                                card_view:layout_constraintTop_toBottomOf="@+id/tvNameParent" />
+
+                            <com.beardedhen.androidbootstrap.BootstrapWell
+                                android:id="@+id/tvNameParent"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginRight="40dp"
+                                android:layout_marginTop="8dp"
+                                app:bootstrapSize="xs"
+                                card_view:layout_constraintHorizontal_bias="0.5"
+                                card_view:layout_constraintLeft_toLeftOf="parent"
+                                card_view:layout_constraintRight_toRightOf="parent"
+                                card_view:layout_constraintTop_toTopOf="parent">
+
+                                <TextView
+                                    android:id="@+id/tvTitle"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_horizontal"
+                                    android:scrollbars="none"
+                                    android:text="1232"
+                                    android:textColor="@color/bootstrap_brand_success"
+                                    android:textSize="20sp"
+                                    android:textStyle="bold|italic" />
+                            </com.beardedhen.androidbootstrap.BootstrapWell>
+                        </android.support.constraint.ConstraintLayout>
+
+                    </ScrollView
+                        >
+                </FrameLayout>
+            </android.support.constraint.ConstraintLayout>
+        </android.support.v7.widget.CardView>
+    </android.support.v7.widget.CardView>
+
+
+</LinearLayout>
