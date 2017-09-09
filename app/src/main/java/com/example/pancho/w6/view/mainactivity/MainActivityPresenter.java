@@ -6,14 +6,17 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.pancho.w6.model.Movies;
+import com.example.pancho.w6.model.Result;
 import com.example.pancho.w6.util.CONSTANTS;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -150,5 +153,20 @@ public class MainActivityPresenter implements MainActivityContract.Presenter {
         Movies movies = gson.fromJson(json, type);
 
         return movies;
+    }
+
+    @Override
+    public ArrayList<Result> fetchResultsSub(List<Result> results, int currentPage, int limit) {
+
+        ArrayList<Result> amazonBooksub = null;
+
+        try {
+            if (currentPage * limit > results.size() - 1) {
+                Log.d(TAG, "fetchResultsSub: " + (currentPage - 1) * limit + " " + results.size());
+                amazonBooksub = new ArrayList<Result>(results.subList((currentPage - 1) * limit, results.size() - 1));
+            } else
+                amazonBooksub = new ArrayList<Result>(results.subList((currentPage - 1) * limit, currentPage * limit));
+        }catch(Exception ex){}
+        return amazonBooksub;
     }
 }

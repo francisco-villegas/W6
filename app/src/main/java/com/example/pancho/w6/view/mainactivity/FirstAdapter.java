@@ -1,6 +1,7 @@
 package com.example.pancho.w6.view.mainactivity;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -29,7 +30,7 @@ import butterknife.ButterKnife;
  * Created by FRANCISCO on 10/08/2017.
  */
 
-public class FirstAdapter extends RecyclerView.Adapter<FirstAdapter.ViewHolder> {
+public class FirstAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final String TAG = "ResultListAdapter";
     List<Result> ResultList;
@@ -39,64 +40,89 @@ public class FirstAdapter extends RecyclerView.Adapter<FirstAdapter.ViewHolder> 
     private static final int ITEM = 0;
     private static final int LOADING = 1;
 
-    public FirstAdapter(List<Result> ResultList) {
-        this.ResultList = ResultList;
+    public FirstAdapter(Context context) {
+        this.context = context;
+        this.ResultList = new ArrayList<>();
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         //Log.d(TAG, "onCreateViewHolder: ");
-        context = parent.getContext();
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list, parent, false);
-        return new ViewHolder(view);
+        RecyclerView.ViewHolder viewHolder = null;
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+
+        switch (viewType) {
+            case ITEM:
+                viewHolder = getViewHolder(parent, inflater);
+                break;
+            case LOADING:
+                View v2 = inflater.inflate(R.layout.item_progress, parent, false);
+                viewHolder = new LoadingVH(v2);
+                break;
+        }
+        return viewHolder;
+    }
+
+    @NonNull
+    private RecyclerView.ViewHolder getViewHolder(ViewGroup parent, LayoutInflater inflater) {
+        RecyclerView.ViewHolder viewHolder;
+        View v1 = inflater.inflate(R.layout.item_list, parent, false);
+        viewHolder = new ViewHolder(v1);
+        return viewHolder;
     }
 
     private int lastPosition = -1;
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-        if(position > lastPosition){
-            //Animation animation = AnimationUtils
+        final Result results = ResultList.get(position); // Movie
+
+        switch (getItemViewType(position)) {
+            case ITEM:
+                final ViewHolder holderVH = (ViewHolder) holder;
+
+                Picasso.with(context).load(CONSTANTS.PATH_MOVIES_IMG + results.getPosterPath()).into(holderVH.img);
+                if (!results.getTitle().trim().equals(""))
+                    holderVH.tvTitle.setText(results.getTitle());
+                else
+                    holderVH.tvNameParent.setVisibility(holderVH.tvNameParent.getRootView().GONE);
+
+                holderVH.tvRegion.setText(String.valueOf(results.getPopularity()));
+
+                if (!results.getReleaseDate().trim().equals(""))
+                    holderVH.tvType.setText(results.getReleaseDate());
+                else
+                    holderVH.tvType.setVisibility(holderVH.tvType.getRootView().GONE);
+
+                if (!results.getOverview().trim().equals(""))
+                    holderVH.tvOverview.setText(results.getOverview());
+                else
+                    holderVH.tvOverview.setVisibility(holderVH.tvOverview.getRootView().GONE);
+
+                holderVH.scroll.setOnTouchListener(new View.OnTouchListener() {
+
+                    public boolean onTouch(View v, MotionEvent event) {
+                        // Disallow the touch request for parent scroll on touch of child view
+                        if (holderVH.scroll.getChildAt(0).getHeight() > holderVH.scroll_parent.getMeasuredHeight()) {
+                            v.getParent().requestDisallowInterceptTouchEvent(true);
+                            return false;
+                        }
+                        return true;
+                    }
+                });
+
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ((EventListener) context).ItemClick(results);
+                    }
+                });
+                break;
+
+            case LOADING:
+//                Do nothing
+                break;
         }
-
-        //Log.d(TAG, "onBindViewHolder: ");
-        final Result results = ResultList.get(position);
-        Picasso.with(context).load(CONSTANTS.PATH_MOVIES_IMG + results.getPosterPath()).into(holder.img);
-        if(!results.getTitle().trim().equals(""))
-            holder.tvTitle.setText(results.getTitle());
-        else
-            holder.tvNameParent.setVisibility(holder.tvNameParent.getRootView().GONE);
-
-        holder.tvRegion.setText(String.valueOf(results.getPopularity()));
-
-        if(!results.getReleaseDate().trim().equals(""))
-            holder.tvType.setText(results.getReleaseDate());
-        else
-            holder.tvType.setVisibility(holder.tvType.getRootView().GONE);
-
-        if(!results.getOverview().trim().equals(""))
-            holder.tvOverview.setText(results.getOverview());
-        else
-            holder.tvOverview.setVisibility(holder.tvOverview.getRootView().GONE);
-
-        holder.scroll.setOnTouchListener(new View.OnTouchListener() {
-
-            public boolean onTouch(View v, MotionEvent event) {
-                // Disallow the touch request for parent scroll on touch of child view
-                if(holder.scroll.getChildAt(0).getHeight() > holder.scroll_parent.getMeasuredHeight()) {
-                    v.getParent().requestDisallowInterceptTouchEvent(true);
-                    return false;
-                }
-                return true;
-            }
-        });
-        
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((EventListener) context).ItemClick(results);
-            }
-        });
 
     }
 
@@ -205,5 +231,12 @@ public class FirstAdapter extends RecyclerView.Adapter<FirstAdapter.ViewHolder> 
 
     public interface EventListener {
         void ItemClick(Result item);
+    }
+
+    protected class LoadingVH extends RecyclerView.ViewHolder {
+
+        public LoadingVH(View itemView) {
+            super(itemView);
+        }
     }
 }

@@ -97,6 +97,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
         recycler.setDrawingCacheEnabled(true);
         recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
 
+        firstAdapter = new FirstAdapter(this);
+        recycler.setAdapter(firstAdapter);
+        firstAdapter.notifyDataSetChanged();
+
         recycler.addOnScrollListener(new PaginationScrollListener( layoutManager) {
             @Override
             protected void loadMoreItems() {
@@ -129,18 +133,34 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
         });
     }
 
-    private ArrayList<Result> fetchResultsSub(List<Result> results, int currentPage, int limit) {
-        ArrayList<Result> amazonBooksub = new ArrayList<Result> (results.subList((currentPage-1)*limit,currentPage*limit));
-        return amazonBooksub;
+    private void loadFirstPage() {
+        ArrayList<Result> resultsSub = presenter.fetchResultsSub(results,currentPage,limit);
+        if (resultsSub != null) {
+            firstAdapter.addAll(resultsSub);
+
+            if ((currentPage != TOTAL_PAGES)) firstAdapter.addLoadingFooter();
+            else isLastPage = true;
+        }
+        else
+            isLastPage = true;
     }
 
     private void loadNextPage() {
-        ArrayList<Result> resultsSub = fetchResultsSub(results,currentPage,limit);
+        ArrayList<Result> resultsSub = presenter.fetchResultsSub(results,currentPage,limit);
 
-        firstAdapter.removeLoadingFooter();
-        isLoading = false;
-        firstAdapter.addAll(resultsSub);
-        firstAdapter.addLoadingFooter();
+        if (resultsSub != null) {
+            firstAdapter.removeLoadingFooter();
+            isLoading = false;
+            firstAdapter.addAll(resultsSub);
+
+            if ((currentPage != TOTAL_PAGES)) {
+                firstAdapter.addLoadingFooter();
+            } else isLastPage = true;
+        }
+        else {
+            firstAdapter.removeLoadingFooter();
+            isLastPage = true;
+        }
     }
 
     private void setupDaggerComponent() {
@@ -181,9 +201,11 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
     @Override
     public void sendResult(Movies movies) {
         this.results = movies.getResults();
-        firstAdapter = new FirstAdapter(movies.getResults());
-        recycler.setAdapter(firstAdapter);
-        firstAdapter.notifyDataSetChanged();
+        isLastPage = false;
+        isLoading = false;
+        currentPage = PAGE_START;
+        firstAdapter.clear();
+        loadFirstPage();
     }
 
     @Override
